@@ -7,5 +7,6 @@ const express_1 = __importDefault(require("express"));
 const payment_1 = require("../controllers/payment");
 const router = express_1.default.Router();
 router.post("/", payment_1.createPayment);
+router.post("/payment-callback", payment_1.paymentCallback);
 const PaymentRouter = router;
 exports.default = PaymentRouter;
