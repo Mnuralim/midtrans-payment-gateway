@@ -42,7 +42,6 @@ const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         const dataPayment = {
             response: JSON.stringify(transaction),
         };
-        console.log(dataPayment);
         res.status(200).json({
             message: "success",
             dataPayment,
@@ -80,4 +79,3 @@ const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.paymentCallback = paymentCallback;
-const getAllDataPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () { });

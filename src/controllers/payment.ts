@@ -34,8 +34,6 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
       response: JSON.stringify(transaction),
     };
 
-    console.log(dataPayment);
-
     res.status(200).json({
       message: "success",
       dataPayment,
@@ -70,5 +68,3 @@ export const paymentCallback = async (req: Request, res: Response, next: NextFun
     next(new ApiError("Failed to create payment", 500));
   }
 };
-
-const getAllDataPayment = async (req: Request, res: Response, next: NextFunction) => {};
