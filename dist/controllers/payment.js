@@ -12,12 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createPayment = void 0;
+exports.paymentCallback = exports.createPayment = void 0;
 const apiError_1 = __importDefault(require("../utils/apiError"));
 const midtrans_client_1 = __importDefault(require("midtrans-client"));
+const payment_1 = __importDefault(require("../models/payment"));
 const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { orderId, total, name } = req.body;
     try {
+        const createPayment = yield payment_1.default.create({
+            orderId,
+            total,
+            name,
+        });
         const snap = new midtrans_client_1.default.Snap({
             isProduction: false,
             serverKey: "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw",
@@ -25,16 +31,17 @@ const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         });
         const transaction = yield snap.createTransaction({
             transaction_details: {
-                order_id: orderId,
-                gross_amount: total,
+                order_id: createPayment.orderId,
+                gross_amount: createPayment.total,
             },
             customer_details: {
-                first_name: name,
+                first_name: createPayment.name,
             },
         });
         const dataPayment = {
             response: JSON.stringify(transaction),
         };
+        console.log(dataPayment);
         res.status(200).json({
             message: "success",
             dataPayment,
@@ -47,3 +54,8 @@ const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.createPayment = createPayment;
+const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body.signature_key);
+});
+exports.paymentCallback = paymentCallback;
+const getAllDataPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () { });
