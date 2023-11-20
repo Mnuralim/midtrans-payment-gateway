@@ -47,15 +47,25 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
 };
 
 export const paymentCallback = async (req: Request, res: Response, next: NextFunction) => {
-  const { order_id, status_code, gross_amount } = req.body;
-  const serverKey = "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw";
-  const hash = crypto
-    .createHash("sha512")
-    .update(order_id + status_code + gross_amount + serverKey)
-    .digest("hex");
+  const { order_id, status_code, gross_amount, signature_key, transaction_status } = req.body;
+  try {
+    const serverKey = "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw";
+    const hashed = crypto
+      .createHash("sha512")
+      .update(order_id + status_code + gross_amount + serverKey)
+      .digest("hex");
 
-  console.log({ signatureKey: req.body.signature_key });
-  console.log({ hash });
+    if (hashed === signature_key) {
+      if (transaction_status == "settlement") {
+        const payment = await Payment.findOne({ orderId: order_id });
+        if (!payment) return next(new ApiError("Transaksi tidak ada", 404));
+        payment.status = "paid";
+        await payment.save();
+      }
+    }
+  } catch (error) {
+    next(new ApiError("Failed to create payment", 500));
+  }
 };
 
 const getAllDataPayment = async (req: Request, res: Response, next: NextFunction) => {};

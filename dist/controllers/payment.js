@@ -55,14 +55,26 @@ const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 });
 exports.createPayment = createPayment;
 const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { order_id, status_code, gross_amount } = req.body;
-    const serverKey = "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw";
-    const hash = crypto_1.default
-        .createHash("sha512")
-        .update(order_id + status_code + gross_amount + serverKey)
-        .digest("hex");
-    console.log({ signatureKey: req.body.signature_key });
-    console.log({ hash });
+    const { order_id, status_code, gross_amount, signature_key, transaction_status } = req.body;
+    try {
+        const serverKey = "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw";
+        const hashed = crypto_1.default
+            .createHash("sha512")
+            .update(order_id + status_code + gross_amount + serverKey)
+            .digest("hex");
+        if (hashed === signature_key) {
+            if (transaction_status == "settlement") {
+                const payment = yield payment_1.default.findOne({ orderId: order_id });
+                if (!payment)
+                    return next(new apiError_1.default("Transaksi tidak ada", 404));
+                payment.status = "paid";
+                yield payment.save();
+            }
+        }
+    }
+    catch (error) {
+        next(new apiError_1.default("Failed to create payment", 500));
+    }
 });
 exports.paymentCallback = paymentCallback;
 const getAllDataPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () { });
