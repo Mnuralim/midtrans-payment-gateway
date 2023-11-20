@@ -47,7 +47,7 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
 };
 
 export const paymentCallback = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body.signature_key);
+  console.log({ signatureKey: req.body.signature_key });
 };
 
 const getAllDataPayment = async (req: Request, res: Response, next: NextFunction) => {};

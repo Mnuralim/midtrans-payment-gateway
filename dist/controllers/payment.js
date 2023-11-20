@@ -55,7 +55,7 @@ const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 });
 exports.createPayment = createPayment;
 const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body.signature_key);
+    console.log({ signatureKey: req.body.signature_key });
 });
 exports.paymentCallback = paymentCallback;
 const getAllDataPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () { });
