@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import errorHandler from "./controllers/errorHandler";
 import ApiError from "./utils/apiError";
+import PaymentRouter from "./routes/payment";
 
 const app: Express = express();
 
@@ -12,6 +13,8 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use(cookieParser());
+
+app.use("/api/payment", PaymentRouter);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`Routes does not exist`, 404));
