@@ -71,6 +71,9 @@ const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
                 yield payment.save();
             }
         }
+        res.status(200).json({
+            message: "success",
+        });
     }
     catch (error) {
         next(new apiError_1.default("Failed to create payment", 500));

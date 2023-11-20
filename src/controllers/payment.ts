@@ -63,6 +63,9 @@ export const paymentCallback = async (req: Request, res: Response, next: NextFun
         await payment.save();
       }
     }
+    res.status(200).json({
+      message: "success",
+    });
   } catch (error) {
     next(new ApiError("Failed to create payment", 500));
   }
