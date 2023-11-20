@@ -16,6 +16,7 @@ exports.paymentCallback = exports.createPayment = void 0;
 const apiError_1 = __importDefault(require("../utils/apiError"));
 const midtrans_client_1 = __importDefault(require("midtrans-client"));
 const payment_1 = __importDefault(require("../models/payment"));
+const crypto_1 = __importDefault(require("crypto"));
 const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { orderId, total, name } = req.body;
     try {
@@ -49,13 +50,19 @@ const createPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        // Pass the error to the next middleware
         next(new apiError_1.default("Failed to create payment", 500));
     }
 });
 exports.createPayment = createPayment;
 const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { order_id, status_code, gross_amount } = req.body;
+    const serverKey = "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw";
+    const hash = crypto_1.default
+        .createHash("sha512")
+        .update(order_id + status_code + gross_amount + serverKey)
+        .digest("hex");
     console.log({ signatureKey: req.body.signature_key });
+    console.log({ hash });
 });
 exports.paymentCallback = paymentCallback;
 const getAllDataPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () { });

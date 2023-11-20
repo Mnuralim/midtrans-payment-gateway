@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import ApiError from "../utils/apiError";
 import midtransClient, { TransactionResult } from "midtrans-client";
 import Payment from "../models/payment";
+import crypto from "crypto";
 
 export const createPayment = async (req: Request, res: Response, next: NextFunction) => {
   const { orderId, total, name } = req.body;
@@ -41,13 +42,20 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
       token: transaction.token,
     });
   } catch (error) {
-    // Pass the error to the next middleware
     next(new ApiError("Failed to create payment", 500));
   }
 };
 
 export const paymentCallback = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id, status_code, gross_amount } = req.body;
+  const serverKey = "SB-Mid-server-6MZ5JE49DtJ4yKZ1hC7Wc1Iw";
+  const hash = crypto
+    .createHash("sha512")
+    .update(order_id + status_code + gross_amount + serverKey)
+    .digest("hex");
+
   console.log({ signatureKey: req.body.signature_key });
+  console.log({ hash });
 };
 
 const getAllDataPayment = async (req: Request, res: Response, next: NextFunction) => {};
