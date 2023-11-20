@@ -68,3 +68,16 @@ export const paymentCallback = async (req: Request, res: Response, next: NextFun
     next(new ApiError("Failed to create payment", 500));
   }
 };
+
+export const getPaymentDetail = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = req.params;
+
+  try {
+    const payment = await Payment.findOne({ orderId: order_id });
+    res.status(200).json({
+      payment,
+    });
+  } catch (error) {
+    next(new ApiError("Failed to create payment", 500));
+  }
+};

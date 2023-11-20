@@ -8,5 +8,6 @@ const payment_1 = require("../controllers/payment");
 const router = express_1.default.Router();
 router.post("/", payment_1.createPayment);
 router.post("/payment-callback", payment_1.paymentCallback);
+router.get("/:order_id", payment_1.getPaymentDetail);
 const PaymentRouter = router;
 exports.default = PaymentRouter;

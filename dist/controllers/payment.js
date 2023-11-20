@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paymentCallback = exports.createPayment = void 0;
+exports.getPaymentDetail = exports.paymentCallback = exports.createPayment = void 0;
 const apiError_1 = __importDefault(require("../utils/apiError"));
 const midtrans_client_1 = __importDefault(require("midtrans-client"));
 const payment_1 = __importDefault(require("../models/payment"));
@@ -79,3 +79,16 @@ const paymentCallback = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.paymentCallback = paymentCallback;
+const getPaymentDetail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { order_id } = req.params;
+    try {
+        const payment = yield payment_1.default.findOne({ orderId: order_id });
+        res.status(200).json({
+            payment,
+        });
+    }
+    catch (error) {
+        next(new apiError_1.default("Failed to create payment", 500));
+    }
+});
+exports.getPaymentDetail = getPaymentDetail;
